@@ -1,0 +1,35 @@
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: Rim (by request) · redesign: full
+ * nav: top bar · signature: pushdown automata workbench · states: default, hover, focus, active, disabled, evaluating
+ * axes: dark/grotesk-sans/warm · posture: committed · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V4 · weakest: V, committed instrument layout with zero radius hairline chassis */
+/* Hallmark · answered F3 · display heads are balanced or single line */
+/* Hallmark · answered F23 · meta description and title verified */
+/* Hallmark · dropped setJsonText, setActiveTab('json'), handleExportJSON, handleExportSVG, handleImportJSON, handleZoomIn, handleZoomOut · removed by explicit user directive */
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./base.css" layer(base);
+
+@layer base {
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  code, kbd, samp, pre, .font-mono {
+    font-family: var(--font-outlier);
+  }
+
+  .font-serif, .math-serif {
+    font-family: var(--font-math);
+  }
+}
+
+/* Hairline Instrument Surface Ticks & Utilities */
+.hairline-frame {
+  border: var(--rule-hair) solid var(--color-rule);
+}
+
+.hairline-divider {
+  border-color: var(--color-rule);
+}
