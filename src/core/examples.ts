@@ -1,5 +1,5 @@
 import { PDA } from './pda';
-import { createAnBnGeneralized, createAnBmCnpm, createEvenPalindrome, createEqualAandB, createBalancedParens, createAiBjComparison } from './templates';
+import { createAnBnGeneralized, createAnBmGeneralized, createAnBmCnpm, createEvenPalindrome, createEqualAandB, createBalancedParens, createAiBjComparison } from './templates';
 import { parseCFG } from './cfgParser';
 import { convertCFGToPDA } from './cfgToPda';
 
@@ -57,6 +57,15 @@ export const BUILT_IN_EXAMPLES: ExampleDefinition[] = [
     defaultInput: 'aabbbb',
     description: 'Pushes two symbols for each "a", pops one for each "b".',
     getPDA: () => createAnBnGeneralized(1, 2, 1, 'a', 'b'),
+  },
+  {
+    id: 'a2n_bm',
+    title: 'a^(2n) b^m (n, m >= 1)',
+    category: 'Language Patterns',
+    languageMath: 'L = \\{ a^{2n} b^m \\mid n, m \\ge 1 \\}',
+    defaultInput: 'aaaabb',
+    description: 'Independent exponents: requires an even number of "a"s (n >= 1) followed by any positive number of "b"s (m >= 1).',
+    getPDA: () => createAnBmGeneralized(2, 1, 1, 1, 'a', 'b'),
   },
   {
     id: 'an_bm_cnpm',

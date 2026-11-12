@@ -154,7 +154,7 @@ export const TransitionTable: React.FC<TransitionTableProps> = ({ pda, activeTra
                     <span
                       className={`text-xs font-body font-medium ${
                         type === 'PUSH'
-                          ? 'text-accent-2 font-semibold'
+                          ? 'text-accent font-semibold'
                           : type === 'POP'
                           ? 'text-error font-semibold'
                           : 'text-muted'

@@ -142,7 +142,7 @@ export const TraceView: React.FC<TraceViewProps> = ({
                     {step.config.remaining === '' ? (
                       <span className="text-muted italic">ε (empty)</span>
                     ) : (
-                      <span className="text-accent-2 font-mono font-bold">
+                      <span className="text-accent font-mono font-bold">
                         {step.config.remaining}
                       </span>
                     )}

@@ -27,7 +27,7 @@
   --color-rule-2: oklch(92% 0.004 260);
   --color-accent: oklch(62% 0.19 45);
   --color-accent-ink: oklch(99% 0.005 45);
-  --color-accent-2: oklch(52% 0.16 245);
+  --color-accent-2: oklch(58% 0.17 50);
   --color-focus: oklch(62% 0.19 45);
   --font-display: "Switzer", ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-display);
@@ -54,7 +54,7 @@
   --color-rule-2: oklch(92% 0.004 260);
   --color-accent: oklch(62% 0.19 45);
   --color-accent-ink: oklch(99% 0.005 45);
-  --color-accent-2: oklch(52% 0.16 245);
+  --color-accent-2: oklch(58% 0.17 50);
   --color-focus: oklch(62% 0.19 45);
 
   --space-3xs: 2px;
@@ -103,7 +103,7 @@
   --color-rule-2: oklch(23% 0.010 260);
   --color-accent: oklch(74% 0.19 48);
   --color-accent-ink: oklch(12% 0.02 48);
-  --color-accent-2: oklch(75% 0.14 245);
+  --color-accent-2: oklch(72% 0.16 55);
   --color-focus: oklch(78% 0.18 48);
   --color-dot: color-mix(in oklab, var(--color-rule) 60%, transparent);
 }
@@ -122,7 +122,7 @@
   --color-rule-2: oklch(92% 0.004 260);
   --color-accent: oklch(62% 0.19 45);
   --color-accent-ink: oklch(99% 0.005 45);
-  --color-accent-2: oklch(52% 0.16 245);
+  --color-accent-2: oklch(58% 0.17 50);
   --color-focus: oklch(62% 0.19 45);
   --color-dot: color-mix(in oklab, var(--color-rule) 60%, transparent);
 }
@@ -142,7 +142,7 @@
     --color-rule-2: oklch(23% 0.010 260);
     --color-accent: oklch(74% 0.19 48);
     --color-accent-ink: oklch(12% 0.02 48);
-    --color-accent-2: oklch(75% 0.14 245);
+    --color-accent-2: oklch(72% 0.16 55);
     --color-focus: oklch(78% 0.18 48);
     --color-dot: color-mix(in oklab, var(--color-rule) 60%, transparent);
   }

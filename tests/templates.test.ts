@@ -67,6 +67,44 @@ describe('Language Parser', () => {
     expect(res.parsed?.type).toBe('equal_a_b');
   });
 
+  it('parses a^2n b^m, n,m >= 1 (user expression)', () => {
+    const res = parseLanguageInput('a^2n b^m, n,m >= 1');
+    expect(res.success).toBe(true);
+    expect(res.parsed?.type).toBe('an_bm_generalized');
+    expect(res.parsed?.p).toBe(2);
+    expect(res.parsed?.q).toBe(1);
+    expect(res.parsed?.minN).toBe(1);
+    expect(res.parsed?.minM).toBe(1);
+  });
+
+  it('parses a^2n b^m, n, m >= 0 (zero lower bound)', () => {
+    const res = parseLanguageInput('a^2n b^m, n, m >= 0');
+    expect(res.success).toBe(true);
+    expect(res.parsed?.type).toBe('an_bm_generalized');
+    expect(res.parsed?.p).toBe(2);
+    expect(res.parsed?.q).toBe(1);
+    expect(res.parsed?.minN).toBe(0);
+    expect(res.parsed?.minM).toBe(0);
+  });
+
+  it('parses a^n b^m, n,m >= 1', () => {
+    const res = parseLanguageInput('a^n b^m, n,m >= 1');
+    expect(res.success).toBe(true);
+    expect(res.parsed?.type).toBe('an_bm_generalized');
+    expect(res.parsed?.p).toBe(1);
+    expect(res.parsed?.q).toBe(1);
+    expect(res.parsed?.minN).toBe(1);
+    expect(res.parsed?.minM).toBe(1);
+  });
+
+  it('parses a^i b^j without comparison constraint', () => {
+    const res = parseLanguageInput('a^i b^j, i, j >= 1');
+    expect(res.success).toBe(true);
+    expect(res.parsed?.type).toBe('an_bm_generalized');
+    expect(res.parsed?.p).toBe(1);
+    expect(res.parsed?.q).toBe(1);
+  });
+
   it('gracefully rejects unsupported pattern with helpful message', () => {
     const res = parseLanguageInput('a^n b^n c^n'); // Famous non-CFL
     expect(res.success).toBe(false);
@@ -178,6 +216,72 @@ describe('PDA Templates Cross-Checked Against Brute-Force Membership', () => {
     };
 
     const strings = generateAllStrings(['a', 'b'], 6);
+    for (const str of strings) {
+      const expected = oracle(str);
+      const actual = simulatePDA(pda, str).accepted;
+      if (expected !== actual) {
+        throw new Error(`Mismatch on string "${str}": expected ${expected}, got ${actual}`);
+      }
+    }
+  });
+
+  it('cross-checks a^2n b^m (n, m >= 1) against brute-force oracle on strings up to length 8', () => {
+    const parseRes = parseLanguageInput('a^2n b^m, n,m >= 1');
+    const pda = generatePDAFromParsed(parseRes.parsed!);
+
+    // Oracle: even number of 'a's >= 2, followed by >= 1 'b's
+    const oracle = (s: string) => {
+      const match = s.match(/^a+b+$/);
+      if (!match) return false;
+      const numA = (s.match(/a/g) || []).length;
+      const numB = (s.match(/b/g) || []).length;
+      return numA % 2 === 0 && numA >= 2 && numB >= 1;
+    };
+
+    const strings = generateAllStrings(['a', 'b'], 8);
+    for (const str of strings) {
+      const expected = oracle(str);
+      const actual = simulatePDA(pda, str).accepted;
+      if (expected !== actual) {
+        throw new Error(`Mismatch on string "${str}": expected ${expected}, got ${actual}`);
+      }
+    }
+  });
+
+  it('cross-checks a^n b^m (n, m >= 1) against brute-force oracle on strings up to length 8', () => {
+    const parseRes = parseLanguageInput('a^n b^m, n,m >= 1');
+    const pda = generatePDAFromParsed(parseRes.parsed!);
+
+    const oracle = (s: string) => {
+      const match = s.match(/^a+b+$/);
+      if (!match) return false;
+      const numA = (s.match(/a/g) || []).length;
+      const numB = (s.match(/b/g) || []).length;
+      return numA >= 1 && numB >= 1;
+    };
+
+    const strings = generateAllStrings(['a', 'b'], 8);
+    for (const str of strings) {
+      const expected = oracle(str);
+      const actual = simulatePDA(pda, str).accepted;
+      if (expected !== actual) {
+        throw new Error(`Mismatch on string "${str}": expected ${expected}, got ${actual}`);
+      }
+    }
+  });
+
+  it('cross-checks a^2n b^m (n, m >= 0) against brute-force oracle on strings up to length 8', () => {
+    const parseRes = parseLanguageInput('a^2n b^m, n, m >= 0');
+    const pda = generatePDAFromParsed(parseRes.parsed!);
+
+    const oracle = (s: string) => {
+      const match = s.match(/^a*b*$/);
+      if (!match) return false;
+      const numA = (s.match(/a/g) || []).length;
+      return numA % 2 === 0;
+    };
+
+    const strings = generateAllStrings(['a', 'b'], 8);
     for (const str of strings) {
       const expected = oracle(str);
       const actual = simulatePDA(pda, str).accepted;

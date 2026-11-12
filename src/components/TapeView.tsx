@@ -15,7 +15,7 @@ export const TapeView: React.FC<TapeViewProps> = ({ inputString, remaining }) =>
       {/* Tape Strip Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-accent-2" />
+          <span className="w-1.5 h-1.5 rounded-full bg-accent" />
           <span className="font-body font-medium text-xs text-ink">
             Input Buffer
           </span>
@@ -80,7 +80,7 @@ export const TapeView: React.FC<TapeViewProps> = ({ inputString, remaining }) =>
 
           {/* Cursor Pointer */}
           <div className="flex items-center mt-1 h-4 text-xs font-body text-muted">
-            <span className="inline-flex items-center gap-1 font-medium text-accent-2">
+            <span className="inline-flex items-center gap-1 font-medium text-accent">
               <span className="text-[9px]">▲</span>
               <span>Cursor: {isFinished ? 'At end ($)' : `Reading symbol '${inputString[consumedCount]}'`}</span>
             </span>

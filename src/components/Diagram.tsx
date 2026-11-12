@@ -130,7 +130,7 @@ export const Diagram: React.FC<DiagramProps> = ({
     const edgeTextColor = isDark ? '#f1f5f9' : '#0f172a';
     const edgeLabelBg = isDark ? '#0f172a' : '#ffffff';
     const edgeLabelBorder = isDark ? '#334155' : '#64748b';
-    const skyBlue = isDark ? '#38bdf8' : '#0284c7';
+    const orangeAccent = isDark ? '#f97316' : '#ea580c';
     const orangeSignal = isDark ? '#f97316' : '#ea580c';
 
     const cy = cytoscape({
@@ -161,7 +161,7 @@ export const Diagram: React.FC<DiagramProps> = ({
           style: {
             'border-width': 5,
             'border-style': 'double',
-            'border-color': skyBlue,
+            'border-color': orangeAccent,
           },
         },
         {
@@ -178,15 +178,15 @@ export const Diagram: React.FC<DiagramProps> = ({
           style: {
             'curve-style': 'straight',
             'target-arrow-shape': 'triangle',
-            'line-color': skyBlue,
-            'target-arrow-color': skyBlue,
+            'line-color': orangeAccent,
+            'target-arrow-color': orangeAccent,
             width: 1.5,
             label: 'start',
             'font-family': 'Geist Mono, monospace',
             'font-size': '10px',
             'text-rotation': 'autorotate',
             'text-margin-y': -7,
-            color: skyBlue,
+            color: orangeAccent,
             'line-style': 'dashed',
           },
         },
@@ -247,7 +247,7 @@ export const Diagram: React.FC<DiagramProps> = ({
         {
           selector: '.active-node',
           style: {
-            'background-color': skyBlue,
+            'background-color': orangeAccent,
             'border-color': isDark ? '#f8fafc' : '#0f172a',
             'border-width': 3,
             color: '#ffffff',
@@ -409,11 +409,11 @@ export const Diagram: React.FC<DiagramProps> = ({
             <span>State</span>
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full border-2 border-double border-accent-2 bg-paper" />
+            <span className="w-2.5 h-2.5 rounded-full border-2 border-double border-accent bg-paper" />
             <span>Final state (F)</span>
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-accent-2" />
+            <span className="w-2.5 h-2.5 rounded-full bg-accent" />
             <span>Current (q)</span>
           </span>
           <span className="flex items-center gap-1">

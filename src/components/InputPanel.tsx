@@ -64,6 +64,13 @@ export const InputPanel: React.FC = () => {
       const qStr = q === 1 ? '' : q.toString();
       return `L = \\{ a^{${pStr}n} b^{${qStr}n} \\mid n \\ge ${constraintN} \\}`;
     }
+    if (patternType === 'an_bm_gen') {
+      const p = Math.max(1, pVal || 1);
+      const q = Math.max(1, qVal || 1);
+      const pStr = p === 1 ? '' : p.toString();
+      const qStr = q === 1 ? '' : q.toString();
+      return `L = \\{ a^{${pStr}n} b^{${qStr}m} \\mid n, m \\ge ${constraintN} \\}`;
+    }
     if (patternType === 'an_bm_cnpm') {
       return `L = \\{ a^n b^m c^{n+m} \\mid n, m \\ge ${constraintN} \\}`;
     }
@@ -93,6 +100,11 @@ export const InputPanel: React.FC = () => {
       const p = Math.max(1, pVal || 1);
       const q = Math.max(1, qVal || 1);
       const parse = parseLanguageInput(`a^${p === 1 ? '' : p}n b^${q === 1 ? '' : q}n, n >= ${constraintN}`);
+      pdaGenerated = generatePDAFromParsed(parse.parsed!);
+    } else if (patternType === 'an_bm_gen') {
+      const p = Math.max(1, pVal || 1);
+      const q = Math.max(1, qVal || 1);
+      const parse = parseLanguageInput(`a^${p === 1 ? '' : p}n b^${q === 1 ? '' : q}m, n, m >= ${constraintN}`);
       pdaGenerated = generatePDAFromParsed(parse.parsed!);
     } else if (patternType === 'an_bm_cnpm') {
       const parse = parseLanguageInput(`a^n b^m c^(n+m), n >= ${constraintN}`);
@@ -200,6 +212,7 @@ export const InputPanel: React.FC = () => {
                 className="w-full text-xs font-body py-1.5 px-2 rounded-md border border-rule bg-paper text-ink focus-visible:outline-2 focus-visible:outline-focus cursor-pointer"
               >
                 <option value="an_bn_gen">a^(p·n) b^(q·n) (generalized)</option>
+                <option value="an_bm_gen">a^(p·n) b^(q·m) (independent exponents)</option>
                 <option value="an_bm_cnpm">a^n b^m c^(n+m)</option>
                 <option value="an_bn_cm">a^n b^n c^m</option>
                 <option value="ai_bj">a^i b^j with comparison (i &lt; j, i &gt; j, i ≠ j)</option>
@@ -210,8 +223,8 @@ export const InputPanel: React.FC = () => {
               </select>
             </div>
 
-            {/* Coefficients for a^(pn) b^(qn) */}
-            {patternType === 'an_bn_gen' && (
+            {/* Coefficients for a^(pn) b^(qn) / a^(pn) b^(qm) */}
+            {(patternType === 'an_bn_gen' || patternType === 'an_bm_gen') && (
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-xs font-body text-muted mb-0.5">

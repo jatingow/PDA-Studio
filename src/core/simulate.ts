@@ -1,9 +1,3 @@
-/**
- * Pure TypeScript Pushdown Automaton (PDA) simulation engine.
- * Supports non-determinism, ε-transitions, loop protection via visited sets,
- * configurable step limits, and stack-size caps.
- */
-
 import { PDA, Config, SimulationStep, SimulationResult, Transition, cleanPushSymbols, formatPush } from './pda';
 
 export interface SimulateOptions {
@@ -127,9 +121,8 @@ export function simulatePDA(
       accepted: true,
       acceptingPath: [initialStep],
       totalStepsExplored: 1,
-      reason: `Accepted at start configuration: remaining input is empty and ${
-        pda.acceptBy === 'emptyStack' ? 'stack is empty' : `state '${initialConfig.state}' is in final states`
-      }.`,
+      reason: `Accepted at start configuration: remaining input is empty and ${pda.acceptBy === 'emptyStack' ? 'stack is empty' : `state '${initialConfig.state}' is in final states`
+        }.`,
       allBranches: [[initialStep]],
     };
   }
@@ -206,11 +199,10 @@ export function simulatePDA(
           accepted: true,
           acceptingPath: nextPath,
           totalStepsExplored,
-          reason: `Accepted in ${nextPath.length - 1} transitions: entire input consumed and ${
-            pda.acceptBy === 'emptyStack'
+          reason: `Accepted in ${nextPath.length - 1} transitions: entire input consumed and ${pda.acceptBy === 'emptyStack'
               ? 'stack is empty'
               : `reached final state '${nextConfig.state}'`
-          }.`,
+            }.`,
           allBranches: [nextPath, ...sampledDeadEnds.slice(0, 5)],
         };
       }

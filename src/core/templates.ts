@@ -169,6 +169,121 @@ export function createAnBnGeneralized(
 }
 
 /**
+ * a^(p*n) b^(q*m) with independent variables n, m >= minN, minM (e.g. 0 or 1).
+ * e.g., a^2n b^m (p=2, q=1), a^n b^m (p=1, q=1), a^n b^2m (p=1, q=2), a^2n b^3m (p=2, q=3)
+ *
+ * Construction:
+ * - Start state qs.
+ * - sym1 phase:
+ *   If p = 1: transition on sym1 to qa, loop on sym1 in qa. (validAState = 'qa')
+ *   If p > 1: transition on sym1 through cycle qa1 -> qa2 -> ... -> qa(p-1) -> qa0, loop back to qa1. (validAState = 'qa0')
+ * - sym2 phase:
+ *   If q = 1: transition on sym2 to qb, loop on sym2 in qb. (validBState = 'qb')
+ *   If q > 1: transition on sym2 through cycle qb1 -> qb2 -> ... -> qb(q-1) -> qb0, loop back to qb1. (validBState = 'qb0')
+ * - Acceptance (qf):
+ *   From validBState on ε to qf.
+ *   If minM === 0: from validAState on ε to qf.
+ *   If minN === 0: from qs on sym2 to firstBTarget; and if also minM === 0, from qs on ε to qf.
+ */
+export function createAnBmGeneralized(
+  p: number,
+  q: number,
+  minN: number = 1,
+  minM: number = 1,
+  sym1: string = 'a',
+  sym2: string = 'b'
+): PDA {
+  const transitions: Transition[] = [];
+  const states: string[] = ['qs'];
+
+  if (p === 1) {
+    states.push('qa');
+  } else {
+    for (let k = 1; k < p; k++) {
+      states.push(`qa${k}`);
+    }
+    states.push('qa0');
+  }
+
+  if (q === 1) {
+    states.push('qb');
+  } else {
+    for (let k = 1; k < q; k++) {
+      states.push(`qb${k}`);
+    }
+    states.push('qb0');
+  }
+  states.push('qf');
+
+  const validAState = p === 1 ? 'qa' : 'qa0';
+  const firstBTarget = q === 1 ? 'qb' : 'qb1';
+  const validBState = q === 1 ? 'qb' : 'qb0';
+
+  // 1. A-reading transitions
+  if (p === 1) {
+    transitions.push({ from: 'qs', input: sym1, pop: 'Z0', to: 'qa', push: ['Z0'] });
+    transitions.push({ from: 'qa', input: sym1, pop: 'Z0', to: 'qa', push: ['Z0'] });
+  } else {
+    transitions.push({ from: 'qs', input: sym1, pop: 'Z0', to: 'qa1', push: ['Z0'] });
+    for (let k = 1; k < p - 1; k++) {
+      transitions.push({ from: `qa${k}`, input: sym1, pop: 'Z0', to: `qa${k + 1}`, push: ['Z0'] });
+    }
+    transitions.push({ from: `qa${p - 1}`, input: sym1, pop: 'Z0', to: 'qa0', push: ['Z0'] });
+    transitions.push({ from: 'qa0', input: sym1, pop: 'Z0', to: 'qa1', push: ['Z0'] });
+  }
+
+  // 2. B-reading transitions
+  // From valid A state on reading first sym2
+  transitions.push({ from: validAState, input: sym2, pop: 'Z0', to: firstBTarget, push: ['Z0'] });
+
+  // If minN === 0, allow 0 sym1's: can start reading sym2 directly from qs
+  if (minN === 0) {
+    transitions.push({ from: 'qs', input: sym2, pop: 'Z0', to: firstBTarget, push: ['Z0'] });
+  }
+
+  // Internal B cycles
+  if (q === 1) {
+    transitions.push({ from: 'qb', input: sym2, pop: 'Z0', to: 'qb', push: ['Z0'] });
+  } else {
+    for (let k = 1; k < q - 1; k++) {
+      transitions.push({ from: `qb${k}`, input: sym2, pop: 'Z0', to: `qb${k + 1}`, push: ['Z0'] });
+    }
+    transitions.push({ from: `qb${q - 1}`, input: sym2, pop: 'Z0', to: 'qb0', push: ['Z0'] });
+    transitions.push({ from: 'qb0', input: sym2, pop: 'Z0', to: 'qb1', push: ['Z0'] });
+  }
+
+  // 3. Acceptance transitions
+  // When valid B's have been read and input ends
+  transitions.push({ from: validBState, input: 'ε', pop: 'Z0', to: 'qf', push: ['Z0'] });
+
+  // If minM === 0, allow 0 sym2's after reading valid sym1's
+  if (minM === 0) {
+    transitions.push({ from: validAState, input: 'ε', pop: 'Z0', to: 'qf', push: ['Z0'] });
+  }
+
+  // If minN === 0 AND minM === 0, allow empty string ε
+  if (minN === 0 && minM === 0) {
+    transitions.push({ from: 'qs', input: 'ε', pop: 'Z0', to: 'qf', push: ['Z0'] });
+  }
+
+  const pStr = p === 1 ? '' : p.toString();
+  const qStr = q === 1 ? '' : q.toString();
+
+  return {
+    name: `L = { ${sym1}^(${pStr}n) ${sym2}^(${qStr}m) | n >= ${minN}, m >= ${minM} }`,
+    description: `Finite-state PDA accepting multiple of ${p} '${sym1}'s followed by multiple of ${q} '${sym2}'s over stack alphabet {Z0}.`,
+    states,
+    inputAlphabet: [sym1, sym2],
+    stackAlphabet: ['Z0'],
+    transitions,
+    start: 'qs',
+    startStack: 'Z0',
+    finals: ['qf'],
+    acceptBy: 'finalState',
+  };
+}
+
+/**
  * 2. a^n b^m c^(n+m) (n, m >= 1 or >= 0)
  */
 export function createAnBmCnpm(
@@ -569,6 +684,9 @@ export function generatePDAFromParsed(parsed: ParsedLanguage): PDA {
   switch (parsed.type) {
     case 'an_bn_generalized':
       return createAnBnGeneralized(parsed.p, parsed.q, parsed.minN, parsed.sym1, parsed.sym2);
+
+    case 'an_bm_generalized':
+      return createAnBmGeneralized(parsed.p, parsed.q, parsed.minN, parsed.minM, parsed.sym1, parsed.sym2);
 
     case 'an_bm_c_n_plus_m':
       return createAnBmCnpm(parsed.minN, parsed.minM, parsed.sym1, parsed.sym2, parsed.sym3 ?? 'c');
